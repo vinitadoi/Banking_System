@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Details</title>
+  <link rel="stylesheet" href="css/style1.css">
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js" defer  ></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script> 
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="icon" href="images/favicon.ico">
+</head>
+
+<!-- navbar -->
+  <nav class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <a class="navbar-brand" target="_blank" href="./index.html">The Spark Foundation Bank</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item  nav-a">
+                <a class="nav-link" href="index.html">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active nav-a">
+                <a class="nav-link" href="customer.html">Customers</a>
+            </li>
+            <li class="nav-item nav-a">
+                <a class="nav-link" href="transaction.html">Transaction history</a>
+            </li>            
+        </ul>
+    </div>
+</nav>
+  
+  <div class="container w-100 p-3 ">
+    <header>
+      <h3 >Customer Details</h3>
+    </header>
+    <div id="radioscontainer" class="table-wrapper">
+
+    </div>
+    <!-- Add Modal -->
+    <div class="modal fade" id="myModal2" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title ml-auto" id="last">Add new user</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            
+          </div>
+          <div class="modal-body">
+            <form class="col-sm-5 col-xl-12" id='addBrand2'>
+      
+               
+              <div class="form-group ">
+                <label for="uname"> Enter New UserID :&emsp;</label>
+                <input type="number" class="form" id="idd" placeholder="Enter new UserID" name="amount" required>  
+              </div>
+
+              <div class="form-group ">
+                <label for="uname"> Enter Name :&emsp;</label>
+                <input type="text" class="form" id="name" placeholder="Enter Name" name="amount" required>  
+              </div>
+
+              <div class="form-group">
+                <label for="uname"> Enter Email-ID :&emsp;</label>
+                <input type="email" class="form" style="padding-right: 50px;padding-top:10px;" id="email" placeholder="Enter Email-ID" name="amount" required>  
+              </div>
+              
+        
+              <div class="form-group">
+                    <label for="uname"> Enter Amount :&emsp;</label>
+                    <input type="number" class="form" id="amt" placeholder="Enter Amount" name="amount" required>  
+              </div>
+              
+              <br><br>
+              
+              <div style="text-align: center;" class="form-group">
+              <button class="col-sm-2 col-xl-6 text-center btn btn-info" onclick="adduser()" >ADD</button>
+              </div>
+        
+        </form>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+
+
+  </div>
+
+    <div id="radioscontainer">
+  </div>
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="last">Transfer Money</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          
+        </div>
+        <div class="modal-body">
+          <form class="col-sm-5 col-xl-12" id='addBrand'>
+    
+            <div class="form-group">
+              <label for="uname">Select  Sender   :&emsp;</label>
+              <select id="list" style="padding-right: 70px;padding-top:10px;">
+                
+              </select> 
+            </div>
+            
+            <div class="form-group">
+              <label for="uname">Select Receiver:&emsp;</label>
+              <select id="list1" style="padding-right: 70px;padding-top:10px;">
+                
+              </select> 
+            </div>
+            
+      
+            <div class="form-group">
+                  <label for="uname">Enter the Amount :&emsp;</label>
+                  <input type="number" class="form" id="amount" placeholder="Enter Amount" name="amount" required>  
+            </div>
+            
+            <br><br>
+            
+            <div style="text-align: center;" class="form-group">
+            <button class="col-sm-2 col-xl-6 text-center btn btn-info" onclick="transfer()" >SEND MONEY</button>
+            </div>
+      
+      </form>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+
+  
+
+<script>
+  
+  var firebaseConfig = {
+    apiKey: "AIzaSyCUfZPKzu9cBcdjrQcGZ8jgHTkVF8qk120",
+    authDomain: "customers-434c5.firebaseapp.com",
+    databaseURL: "https://customers-434c5.firebaseio.com",
+    projectId: "customers-434c5",
+    storageBucket: "customers-434c5.appspot.com",
+    messagingSenderId: "991721743552",
+    appId: "1:991721743552:web:c1806389ed8ac859dcb925",
+    measurementId: "G-LTF9B53QFW"
+  };
+ 
+
+var data1="",count=0,dataz="";
+data1+=  '<div class="table-wrapper"><table id="table1" class="table"> <thead> <tr> <th scope="col">UserID</th> <th scope="col">Name</th> <th scope="col">Balance</th> <th scope="col">Email-ID</th> <th scope="col">ACTION</th> </tr> </thead> <tbody >';
+   firebase.initializeApp(firebaseConfig);
+
+     var numbers;
+     var cat;
+
+   firebase.database().ref('Users/').once('value').then(function(snapshot) {
+   
+   var data = snapshot.val();
+   
+   snapshot.forEach(function(child){
+    
+      var idd1=child.val().UserID;
+      var name= child.val().Email;
+      var fname=child.val().Name;
+      var lname=child.val().Amount;
+      count+=1;
+      var idcount = "mycheck"+count;
+      data1+='<tr><td>'+idd1+ '</td>  <td>'+fname+ '</td> <td>'+lname+ '</td> <td >'+name+ '</td> <td><button onclick="javascript:ddelete('+idd1+')" class="btn btn-outline-danger">Delete <i class="fa fa-trash-o"></i></button></td> </tr>';
+      
+    });
+    data1+='</table><button data-toggle="modal" data-target="#myModal2" class="btn btn-success">Add User</button> <button data-toggle="modal" data-target="#myModal" class="btn btn-primary">Transfer</button></div'
+    //console.log(data1);
+    $("#radioscontainer").append(data1);
+
+
+    firebase.database().ref('Users/').once('value').then(function(snapshot) {
+       
+       var data = snapshot.val();
+       
+       snapshot.forEach(function(child){
+        
+          var name= child.val().Name;
+          var val= child.val().Amount;
+          var uid= child.val().UserID;
+          console.log("--------------------"+val);
+          var a="<option value="+val+">"+name+"</option>";
+          $("#list").append(a);
+          $("#list1").append(a);
+        });
+
+  });
+
+
+});
+
+
+
+
+
+function adduser()
+{
+  document.getElementById("addBrand2").addEventListener('submit', (event) => {
+              event.preventDefault();
+              
+              var c=document.getElementById('idd').value;
+              var a = document.getElementById('name').value;
+              var b = document.getElementById('email').value;
+              var z = Number(document.getElementById('amt').value);
+
+
+    firebase.database().ref('Users/').once('value').then(function(snapshot) {
+       
+       var data = snapshot.val();
+       var cat=Object.keys(data);
+       console.log(cat.length);
+       var len = cat.length+1;
+      
+      var user = "User"+len;
+      console.log(user);
+
+
+      firebase.database().ref('Users/'+ user).update({
+        UserID: c,
+        Name: a,
+        Email: b,
+        Amount: z
+        }); 
+        location.href = "add.html";
+        //location.reload();
+    });
+  });
+}
+
+function transfer()
+{
+  document.getElementById("addBrand").addEventListener('submit', (event) => {
+              event.preventDefault();
+              
+              var a = Number(document.getElementById('list').value);
+              var b = Number(document.getElementById('list1').value);
+              var z = Number(document.getElementById('amount').value);
+              var m = document.getElementById('list1');
+              var sel = document.getElementById('list');
+              var gel = document.getElementById('list1');
+              //console.log("-----------------------------------------"+m.text);
+              //console.log(b);
+              
+              
+              //console.log(a);
+
+              var amt1 = a-z;
+              var amt2 = b+z;
+
+              console.log(amt1);
+              console.log(amt2);
+             
+              var opt;
+              for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+                opt = sel.options[i];
+                if ( opt.selected === true ) 
+                {
+                  break;
+                }
+              }
+              console.log(opt.text);
+
+
+              var opt1;
+              for ( var i = 0, len = gel.options.length; i < len; i++ ) {
+                opt1 = gel.options[i];
+                if ( opt1.selected === true ) 
+                {
+                  break;
+                }
+              }
+              console.log(opt1.text);
+
+            if(opt.text != opt1.text)
+            {
+              var newPostKey = firebase.database().ref().child('data').push().key;
+             firebase.database().ref('Users/').once('value').then(function(snapshot) {
+       
+                var data = snapshot.val();
+       
+                snapshot.forEach(function(child){
+        
+                  var name= child.val().Name;
+                  var em = child.val().Email;
+                  var id = child.val().UserID;
+                  //console.log(name);
+                  const d= new Date();
+                  date =d.getHours() + ":" + d.getMinutes() + "," + d.toDateString();
+                  var dt= date;
+
+                    if(name == opt.text)
+                    {
+                      console.log(name);
+                      console.log(child.key);
+                      firebase.database().ref('Users/'+ child.key).update({
+                        Amount: amt1
+                      }); 
+                      firebase.database().ref('Transaction/'+newPostKey).update({
+                        Amount: z,
+                        SenderID: id,
+                        Sender: name
+                      }); 
+
+                    }
+
+                    if(name == opt1.text)
+                    {
+                      console.log(child.key);
+                      firebase.database().ref('Users/'+ child.key).update({
+                        Amount: amt2
+                      }); 
+                      firebase.database().ref('Transaction/'+newPostKey).update({
+                        ReceiverID: id,
+                        Receiver: name,
+                        Timestamp: dt
+                      }); 
+                      
+
+                    }
+
+                    location.href = "success.html";
+                    //location.reload();
+                    
+
+                });
+
+            });
+
+            }
+            
+ 
+
+            });
+}
+ 
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function( ) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+var val="";
+function ddelete(val)
+{
+val = "User"+val;
+console.log(val);
+var answer = confirm("Are you sure you want to delete this item? \nPress OK to continue")
+if(answer)
+{
+    firebase.database().ref('Users/'+val).remove();
+    history.go(0);
+}
+}
+
+</script>
+</body>
+</html>
